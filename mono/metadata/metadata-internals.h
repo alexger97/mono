@@ -168,6 +168,7 @@ struct _MonoAssemblyName {
 	mono_byte public_key_token [MONO_PUBLIC_KEY_TOKEN_LENGTH];
 	uint32_t hash_alg;
 	uint32_t hash_len;
+	gboolean has_version;
 	uint32_t flags;
 #ifdef ENABLE_NETCORE
 	int major, minor, build, revision, arch;
