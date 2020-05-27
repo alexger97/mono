@@ -1498,7 +1498,8 @@ assembly_name_to_aname (MonoAssemblyName *assembly, char *p) {
 	int found_sep;
 	char *s;
 	gboolean quoted = FALSE;
-
+	assembly->has_version = FALSE;
+	assembly->has_culture = FALSE;
 	memset (assembly, 0, sizeof (MonoAssemblyName));
 	assembly->culture = "";
 	memset (assembly->public_key_token, 0, MONO_PUBLIC_KEY_TOKEN_LENGTH);
@@ -1508,7 +1509,7 @@ assembly_name_to_aname (MonoAssemblyName *assembly, char *p) {
 		p++;
 	}
 	assembly->name = p;
-	while (*p && (isalnum (*p) || *p == '.' || *p == '-' || *p == '_' || *p == '$' || *p == '@' || g_ascii_isspace (*p)))
+	while (*p && (isalnum (*p) || *p == '.' || *p == '-' || *p == '_' || *p == '$' || *p == '@' ||  g_ascii_isspace (*p)))
 		p++;
 	if (quoted) {
 		if (*p != '"')
@@ -1516,6 +1517,8 @@ assembly_name_to_aname (MonoAssemblyName *assembly, char *p) {
 		*p = 0;
 		p++;
 	}
+	g_strchomp(assembly->name);
+	//assembly->name = p;
 	if (*p != ',')
 		return 1;
 	*p = 0;
@@ -1528,6 +1531,7 @@ assembly_name_to_aname (MonoAssemblyName *assembly, char *p) {
 		p++;
 	while (*p) {
 		if ((*p == 'V' || *p == 'v') && g_ascii_strncasecmp (p, "Version=", 8) == 0) {
+			assembly->has_version = TRUE;
 			p += 8;
 			assembly->major = strtoul (p, &s, 10);
 			if (s == p || *s != '.')
@@ -1546,8 +1550,9 @@ assembly_name_to_aname (MonoAssemblyName *assembly, char *p) {
 				return 1;
 			p = s;
 		} else if ((*p == 'C' || *p == 'c') && g_ascii_strncasecmp (p, "Culture=", 8) == 0) {
+			assembly->has_culture = TRUE;
 			p += 8;
-			if (g_ascii_strncasecmp (p, "neutral", 7) == 0) {
+			if ((g_ascii_strncasecmp (p, "neutral", 7) == 0) && (p [8] == " " || p [8] == ",")) {
 				assembly->culture = "";
 				p += 7;
 			} else {
