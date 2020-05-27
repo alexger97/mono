@@ -1763,11 +1763,13 @@ mono_assembly_get_assemblyref_checked (MonoImage *image, int index, MonoAssembly
 	return_val_if_nok (error, FALSE);
 	aname->culture = mono_metadata_string_heap_checked (image, cols [MONO_ASSEMBLYREF_CULTURE], error);
 	return_val_if_nok (error, FALSE);
+	aname->has_culture = TRUE;
 	aname->flags = cols [MONO_ASSEMBLYREF_FLAGS];
 	aname->major = cols [MONO_ASSEMBLYREF_MAJOR_VERSION];
 	aname->minor = cols [MONO_ASSEMBLYREF_MINOR_VERSION];
 	aname->build = cols [MONO_ASSEMBLYREF_BUILD_NUMBER];
 	aname->revision = cols [MONO_ASSEMBLYREF_REV_NUMBER];
+	aname->has_version = TRUE;
 	if (cols [MONO_ASSEMBLYREF_PUBLIC_KEY]) {
 		gchar *token = assemblyref_public_tok_checked (image, cols [MONO_ASSEMBLYREF_PUBLIC_KEY], aname->flags, error);
 		return_val_if_nok (error, FALSE);
