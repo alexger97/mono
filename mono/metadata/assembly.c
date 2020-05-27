@@ -1509,11 +1509,14 @@ mono_assembly_get_assemblyref (MonoImage *image, int index, MonoAssemblyName *an
 	}
 	aname->name = mono_metadata_string_heap (image, cols [MONO_ASSEMBLYREF_NAME]);
 	aname->culture = mono_metadata_string_heap (image, cols [MONO_ASSEMBLYREF_CULTURE]);
+	aname->has_culture = TRUE;
 	aname->flags = cols [MONO_ASSEMBLYREF_FLAGS];
 	aname->major = cols [MONO_ASSEMBLYREF_MAJOR_VERSION];
 	aname->minor = cols [MONO_ASSEMBLYREF_MINOR_VERSION];
 	aname->build = cols [MONO_ASSEMBLYREF_BUILD_NUMBER];
 	aname->revision = cols [MONO_ASSEMBLYREF_REV_NUMBER];
+	aname->has_version = TRUE;
+
 
 	if (cols [MONO_ASSEMBLYREF_PUBLIC_KEY]) {
 		gchar *token = assemblyref_public_tok (image, cols [MONO_ASSEMBLYREF_PUBLIC_KEY], aname->flags);
